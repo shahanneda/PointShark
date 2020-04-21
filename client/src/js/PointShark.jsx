@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import EditPoints from "./EditPoints.jsx";
 //import Login from "./Login.jsx";
-//import CreateAccount from "./CreateAccount.jsx";
+import CreateAccount from "./CreateAccount.jsx";
+import {Container} from "react-bootstrap";
 
 import {
         HashRouter,
@@ -18,7 +19,7 @@ class PointShark extends Component {
         }
 
         render(){
-                return (<div>
+                return (<Container>
                         <HashRouter>
                                 <Switch>
                                         <Route path="/login">
@@ -27,13 +28,12 @@ class PointShark extends Component {
                                         </Route>
 
                                         <Route path="/create-account">
-                                                create
+                                                <CreateAccount />
                                         </Route>
 
                                         <Route path="/edit-points">
 
                                                 <EditPoints />
-                                                edit
                                         </Route>
 
                                         <Route path="/">
@@ -45,7 +45,7 @@ class PointShark extends Component {
 
                         </HashRouter>
 
-                </div>
+                </Container>
                 );
         }
 
