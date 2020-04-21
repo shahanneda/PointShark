@@ -34,16 +34,24 @@ function mongoSetUpDone(){
         app.post('/newUser', (req, res) => {
                 const salt = bcrypt.genSaltSync(saltRounds);
                 const hash = bcrypt.hashSync(req.body.password, salt);
+                usersCollection.findOne({_id: req.body.id}, (err, user) =>{
+                        if(user != null || user != undefined){
+                                res.send("duplicate");
+                                return;
+                        }
+                        usersCollection.insertOne({
+                                _id: req.body.id,
+                                id: req.body.id,
+                                currentPoints:10,
+                                lastPoints: 10,
+                                updateMessage:"",
+                                lastUpdatedTime:Date.now(),
+                                password: hash,
+                        });
+                        res.send("new user added");
 
-                usersCollection.insertOne({
-                        _id: req.body.id,
-                        id: req.body.id,
-                        currentPoints:10,
-                        lastPoint: 10,
-                        updateMessage:"",
-                        lastUpdatedTime:Date.now(),
-                        password: hash,
                 });
+
 
         });
         app.post('/loginUser', (req, res) => {
@@ -58,11 +66,34 @@ function mongoSetUpDone(){
                 });
         });
 
+        app.post('/setCurrentScore', (req, res) => {
+                usersCollection.findOne({_id: req.body.id}, (err, user) => {
+                        if(user == null || user == undefined || err){
+                                res.send("not found");
+                                return;
+                        }
+                        usersCollection.update({_id: req.body.id}, {
+                                $set: {
+                                        currentPoints: req.body.points, 
+                                        lastPoints: user.currentPoints,
+                                        lastUpdatedTime: Date.now()
+                                }
+                        });
+                        res.send("success");
+
+                });
+
+        });
         app.get('/getUsers', (req, res) =>{
-                usersCollection.find({_id: req.params.id}, (err, user) =>{
-                        delete user.password;
-                        res.send(JSON.stringify(user));
+                usersCollection.find({}).toArray( (err, users) =>{
+                        users.map( (user, index)=>{
+                                delete users[index].password;
+                        });
+                        res.setHeader('Content-Type', 'application/json');
+
+                        res.send(JSON.stringify(users));
                 });
         });
+
         app.use('/pointshark', express.static('client'))
 }
