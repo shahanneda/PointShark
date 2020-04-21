@@ -10,6 +10,7 @@ import {
         Link,
         Redirect,
 } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 class PointShark extends Component {
 
         constructor(props){
