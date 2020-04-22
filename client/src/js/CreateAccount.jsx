@@ -31,6 +31,25 @@ class CreateAccount extends Component {
                                 this.setState({usernameInvalid: response.exists})
                         });
         }
+        submitButtonClicked = (event) => {
+             if(this.state.usernameInvalid){
+                     return;
+             }
+                const requestOptions = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: this.state.username, password:this.state.password})
+                };
+                fetch(this.props.url + "/userExists", requestOptions)
+                        .then(response => {return response.json()})
+                        .then(response => {
+                                console.log(response);
+                                this.setState({usernameInvalid: response.exists})
+                        });
+
+
+        }
+
         render(){
                 return (
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
@@ -41,7 +60,7 @@ class CreateAccount extends Component {
 
                                                         <Form.Group controlId="formBasicEmail">
                                                                 <Form.Label>Login</Form.Label>
-                                                                <Form.Control isInvalid={this.state.usernameInvalid}  value={this.state.username} onChange={this.usernameChange} type="email" placeholder="Enter email" />
+                                                                <Form.Control isInvalid={this.state.usernameInvalid}  value={this.state.username} onChange={this.usernameChange} type="username" placeholder="Enter Username" />
                                                                 <Form.Control.Feedback type="invalid">
                                                                         Username is already taken
                                                                 </Form.Control.Feedback>
@@ -55,7 +74,7 @@ class CreateAccount extends Component {
                                                                 </Form.Control.Feedback>
                                                         </Form.Group>
 
-                                                        <Button variant="primary" type="submit">
+                                                        <Button variant="primary" type="submit" onClick={this.submitButtonClicked}>
                                                                 Submit
                                                         </Button>
                                                 </Form> 
