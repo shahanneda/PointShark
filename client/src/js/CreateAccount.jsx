@@ -1,5 +1,9 @@
 import React, {Component} from "react";
+import {Redirect} from "react-router";
+import Cookies from 'universal-cookie';
+
 import {Form, Button, Card} from "react-bootstrap"; 
+const cookies = new Cookies();
 
 class CreateAccount extends Component {
 
@@ -10,6 +14,7 @@ class CreateAccount extends Component {
                         password:"",
                         usernameInvalid:false,
                         passwordInvalid:false,
+                        goToLogin: false,
                 }
         }
 
@@ -32,25 +37,28 @@ class CreateAccount extends Component {
                         });
         }
         submitButtonClicked = (event) => {
-             if(this.state.usernameInvalid){
-                     return;
-             }
+                if(this.state.usernameInvalid || this.state.username == "") {
+                        return;
+                }
                 const requestOptions = {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: this.state.username, password:this.state.password})
                 };
-                fetch(this.props.url + "/userExists", requestOptions)
-                        .then(response => {return response.json()})
-                        .then(response => {
-                                console.log(response);
-                                this.setState({usernameInvalid: response.exists})
-                        });
-
+                fetch(this.props.url + "/newUser", requestOptions);
+                cookies.set('loggedIn', 'true', { path: '/' });
+                cookies.set('username', this.state.username, { path: '/' });
+                this.setState({goToLogin: true});
 
         }
 
         render(){
+                if(cookies.get('loggedIn') == 'true'){
+                        return(<Redirect to="/edit-points" /> );
+                }
+                if(this.state.goToLogin){
+                        return(<Redirect to="/login" /> );
+                }
                 return (
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
                                 <Card className="">
@@ -73,10 +81,15 @@ class CreateAccount extends Component {
                                                                         Not valid
                                                                 </Form.Control.Feedback>
                                                         </Form.Group>
+                                                        <Form.Group className="">
+                                                                <Button variant="primary" type="submit" className="login-button" onClick={this.submitButtonClicked}>
+                                                                        Create Account
+                                                                </Button>
 
-                                                        <Button variant="primary" type="submit" onClick={this.submitButtonClicked}>
-                                                                Submit
-                                                        </Button>
+                                                                <Button variant="info" type="" className="login-button" onClick={ () => this.setState({goToLogin: true})}>
+                                                                        Go to Login Page
+                                                                </Button>
+                                                        </Form.Group>
                                                 </Form> 
                                         </Card.Body>
                                 </Card>
