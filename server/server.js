@@ -26,6 +26,25 @@ function mongoSetUpDone(){
 
         app.use(express.json());       // to support JSON-encoded bodies
         app.use(express.urlencoded()); // to support URL-encoded bodiesk
+        // Add headers
+        app.use(function (req, res, next) {
+
+                // Website you wish to allow to connect
+                res.setHeader('Access-Control-Allow-Origin', '*');
+
+                // Request methods you wish to allow
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+                // Request headers you wish to allow
+                res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+                // Set to true if you need the website to include cookies in the requests sent
+                // to the API (e.g. in case you use sessions)
+                res.setHeader('Access-Control-Allow-Credentials', true);
+
+                // Pass to next layer of middleware
+                next();
+        });
 
         app.listen(port, function(){
                 console.log("PointShark Server Started on port " + port);
@@ -57,11 +76,10 @@ function mongoSetUpDone(){
         app.post('/loginUser', (req, res) => {
                 res.setHeader('Content-Type', 'application/json');
                 usersCollection.findOne({_id: req.body.id}, (err, user) =>{
-                        console.log(req.body);
                         if(user != null){
                                 res.send(JSON.stringify({correctPass: bcrypt.compareSync(req.body.password, user.password)}));
                         }else{
-                                res.send("notfound")
+                                res.send(JSON.stringify({correctPass: false}));
                         }
 
                 });

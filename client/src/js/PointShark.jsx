@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import EditPoints from "./EditPoints.jsx";
-//import Login from "./Login.jsx";
+import Login from "./Login.jsx";
 import CreateAccount from "./CreateAccount.jsx";
 import {Container} from "react-bootstrap";
 
@@ -24,8 +24,7 @@ class PointShark extends Component {
                         <HashRouter>
                                 <Switch>
                                         <Route path="/login">
-                                                login
-
+                                                <Login url={this.props.url} />
                                         </Route>
 
                                         <Route path="/create-account">
