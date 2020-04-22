@@ -55,10 +55,11 @@ function mongoSetUpDone(){
 
         });
         app.post('/loginUser', (req, res) => {
+                res.setHeader('Content-Type', 'application/json');
                 usersCollection.findOne({_id: req.body.id}, (err, user) =>{
                         console.log(req.body);
                         if(user != null){
-                                res.send(bcrypt.compareSync(req.body.password, user.password));
+                                res.send(JSON.stringify({correctPass: bcrypt.compareSync(req.body.password, user.password)}));
                         }else{
                                 res.send("notfound")
                         }
@@ -93,6 +94,18 @@ function mongoSetUpDone(){
 
                         res.send(JSON.stringify(users));
                 });
+        });
+        app.post('/userExists', (req, res) => {
+                res.setHeader('Content-Type', 'application/json');
+                usersCollection.findOne({_id: req.body.id}, (err, user) => {
+                        if(user == null || user == undefined || err){
+                                res.send(JSON.stringify({exists: false}));
+                                return;
+                        }
+                        res.send(JSON.stringify({exists: true}));
+
+                });
+
         });
 
         app.use('/pointshark', express.static('client'))

@@ -20,6 +20,7 @@ class PointShark extends Component {
 
         render(){
                 return (<Container>
+
                         <HashRouter>
                                 <Switch>
                                         <Route path="/login">
@@ -28,7 +29,7 @@ class PointShark extends Component {
                                         </Route>
 
                                         <Route path="/create-account">
-                                                <CreateAccount />
+                                                <CreateAccount url={this.props.url}/>
                                         </Route>
 
                                         <Route path="/edit-points">

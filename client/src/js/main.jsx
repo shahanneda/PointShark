@@ -6,7 +6,7 @@ const wrapper = document.getElementById("container");
 
 ReactDOM.render(
         <div>
-                <PointShark />
+                <PointShark url="http://216.71.213.85:7772"/>
         </div>
 , wrapper);
 
