@@ -64,12 +64,14 @@ class Login extends Component {
         }
 
         render(){
+
                 if(cookies.get('loggedIn') == 'true' || this.state.goToEditPage){
                         return(<Redirect to="/edit-points" /> );
                 }
                 if(this.state.goToCreateAccount){
                         return(<Redirect to="/create-account" /> );
                 }
+
                 return (
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
                                 <Card className="">
@@ -89,7 +91,7 @@ class Login extends Component {
                                                                 <Form.Label>Password</Form.Label>
                                                                 <Form.Control isInvalid={this.state.passwordInvalid} onKeyDown={() => this.setState({passwordInvalid: false}) } value={this.state.password} onChange={this.passswordChange} type="password" className="" placeholder="Password" />
                                                                 <Form.Control.Feedback type="invalid">
-                                                                        Not valid
+                                                                        Incorrect Password!
                                                                 </Form.Control.Feedback>
                                                         </Form.Group>
                                                         <Form.Group className="">

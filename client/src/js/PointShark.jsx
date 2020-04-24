@@ -19,7 +19,7 @@ class PointShark extends Component {
         }
 
         render(){
-                return (<Container>
+                return (<Container fluid>
 
                         <HashRouter>
                                 <Switch>
