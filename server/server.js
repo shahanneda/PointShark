@@ -65,6 +65,7 @@ function mongoSetUpDone(){
                                 lastPoints: 10,
                                 updateMessage:"",
                                 lastUpdatedTime:Date.now(),
+                                isAdmin:false,
                                 password: hash,
                         });
                         res.send("new user added");
@@ -101,16 +102,19 @@ function mongoSetUpDone(){
                         res.send("success");
 
                 });
+               console.log("set score for " + req.body.id ); 
 
         });
         app.get('/getUsers', (req, res) =>{
                 usersCollection.find({}).toArray( (err, users) =>{
+                        let usersToSend = {};
                         users.map( (user, index)=>{
                                 delete users[index].password;
+                                usersToSend[user.id] = users[index];
                         });
                         res.setHeader('Content-Type', 'application/json');
 
-                        res.send(JSON.stringify(users));
+                        res.send(JSON.stringify(usersToSend));
                 });
         });
         app.post('/userExists', (req, res) => {

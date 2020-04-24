@@ -6,7 +6,7 @@ import {Card, Button, Row, Col, ListGroup} from "react-bootstrap";
 
 const cookies = new Cookies();
 
-class EditPoints extends Component {
+class Admin extends Component {
 
         constructor(props){
                 super(props);
@@ -15,27 +15,29 @@ class EditPoints extends Component {
                         currentGameWonSelected: 0,
                         points: 0,
                         username:cookies.get("username"),
+                        isAdmin: true,
                 };
         }
 
+        componentDidMount(){
+                const requestOptions = {
+                        method: 'get',
+                        headers: { 'Content-Type': 'application/json' },
+                };
+                fetch(this.props.url + "/getUsers", requestOptions).then(response => response.json()).then(response => {
+                        console.log(response);
+                        this.setState({isAdmin: response[this.state.username].isAdmin ? true : false});
+                });
+        }
 
-        submitPoints(){
+        submitPoints = () => {
 
                 const requestOptions = {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id: this.state.username, password:this.state.password})
+                        body: JSON.stringify({id: this.state.username, points: this.state.points})
                 };
-                fetch(this.props.url + "/loginUser", requestOptions).then(response => response.json()).then(response => {
-                        console.log(response);
-                        if(response.correctPass){
-                                cookies.set('loggedIn', 'true', { path: '/' });
-                                cookies.set('username', this.state.username, { path: '/' });
-                                this.setState({goToEditPage: true})
-                        }else{
-                                this.setState({passwordInvalid: true});
-                        }
-                });
+                fetch(this.props.url + "/setCurrentScore", requestOptions);
         }
 
 
@@ -98,4 +100,4 @@ class EditPoints extends Component {
 
 }
 
-export default EditPoints;
+export default Admin;

@@ -33,7 +33,7 @@ class PointShark extends Component {
 
                                         <Route path="/edit-points">
 
-                                                <EditPoints />
+                                                <EditPoints url={this.props.url}/>
                                         </Route>
 
                                         <Route path="/">
