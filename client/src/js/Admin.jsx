@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 
 import Cookies from 'universal-cookie';
-import {Card, Button, Row, Col, ListGroup} from "react-bootstrap";
+import {Card, Button, Row, Col, ListGroup, Table} from "react-bootstrap";
 
 const cookies = new Cookies();
 
@@ -16,6 +16,7 @@ class Admin extends Component {
                         points: 0,
                         username:cookies.get("username"),
                         isAdmin: true,
+                        users: {},
                 };
         }
 
@@ -26,7 +27,7 @@ class Admin extends Component {
                 };
                 fetch(this.props.url + "/getUsers", requestOptions).then(response => response.json()).then(response => {
                         console.log(response);
-                        this.setState({isAdmin: response[this.state.username].admin});
+                        this.setState({users: response, isAdmin: response[this.state.username].admin});
                 });
         }
 
@@ -46,6 +47,7 @@ class Admin extends Component {
                         return(<Redirect to="/login" />);
                 }
 
+                let users = this.state.users;
                 return (<div>
 
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
@@ -61,7 +63,38 @@ class Admin extends Component {
 
 
                                         <Card.Body>
-                                                <Row> test</Row>
+                                                <Row> 
+                                                        <Table  bordered hover>
+                                                                <thead>
+                                                                        <tr>
+                                                                                <th>Name</th>
+                                                                                <th>Current Points</th>
+                                                                                <th>Last Points</th>
+                                                                                <th>Time Updated</th>
+                                                                                <th>Message</th>
+                                                                        </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                        {
+                                                                                Object.keys(users).map( id => {
+                                                                                        let date = new Date(users[id].lastUpdatedTime);
+                                                                                        return(
+                                                                                                <tr key={id}>
+                                                                                                        <th>{id}</th>
+                                                                                                        <th>{users[id].currentPoints}</th>
+                                                                                                        <th>{users[id].lastPoints}</th>
+                                                                                                        <th>{(date.getHours() > 12 ? date.getHours() % 12 : date.getHours()) + ":" + date.getMinutes()}</th>
+                                                                                                        <th> {users[id].updateMessage}</th>
+                                                                                                </tr>
+
+
+                                                                                        );
+
+                                                                                })
+                                                                        }
+                                                                </tbody>
+                                                        </Table>
+                                                </Row>
                                         </Card.Body>
                                 </Card>
                         </div>
