@@ -3,7 +3,7 @@ import EditPoints from "./EditPoints.jsx";
 import Login from "./Login.jsx";
 import CreateAccount from "./CreateAccount.jsx";
 import {Container} from "react-bootstrap";
-import Admin from "./Admin.jsx";
+import ViewAll from "./ViewAll.jsx";
 
 import {
         HashRouter,
@@ -36,8 +36,8 @@ class PointShark extends Component {
 
                                                 <EditPoints url={this.props.url}/>
                                         </Route>
-                                        <Route path="/admin">
-                                                <Admin url={this.props.url} />
+                                        <Route path="/view">
+                                                <ViewAll url={this.props.url} />
                                         </Route>
 
 

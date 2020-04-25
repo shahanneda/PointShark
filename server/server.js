@@ -96,13 +96,14 @@ function mongoSetUpDone(){
                                 $set: {
                                         currentPoints: req.body.points, 
                                         lastPoints: user.currentPoints,
-                                        lastUpdatedTime: Date.now()
+                                        lastUpdatedTime: Date.now(),
+                                        updateMessage: req.body.message,
                                 }
                         });
                         res.send("success");
 
                 });
-               console.log("set score for " + req.body.id ); 
+                console.log("set score for " + req.body.id + " " + req.body.message ); 
 
         });
         app.get('/getUsers', (req, res) =>{
@@ -125,6 +126,21 @@ function mongoSetUpDone(){
                                 return;
                         }
                         res.send(JSON.stringify({exists: true}));
+
+                });
+
+        });
+        app.post('/deleteUser', (req, res) => {
+                console.log("got remove reqest");
+                res.setHeader('Content-Type', 'application/json');
+                usersCollection.findOne({_id: req.body.id}, (err, user) => {
+                        if(user == null || user == undefined || err){
+                                res.send(JSON.stringify({}));
+                                return;
+                        }
+                        usersCollection.remove({_id: req.body.id});
+                        console.log("removed user" + req.body.id);
+                        res.send(JSON.stringify({}));
 
                 });
 
