@@ -52,7 +52,7 @@ class Login extends Component {
                                 console.log(response);
                         if(response.correctPass){
                                 cookies.set('loggedIn', 'true', { path: '/' });
-                                cookies.set('username', this.state.username, { path: '/' });
+                                cookies.set('username', this.state.username.toLowerCase(), { path: '/' });
                                 this.setState({goToEditPage: true})
                         }else{
                                 this.setState({passwordInvalid: true});

@@ -48,7 +48,7 @@ class CreateAccount extends Component {
                 };
                 fetch(this.props.url + "/newUser", requestOptions);
                 cookies.set('loggedIn', 'true', { path: '/' });
-                cookies.set('username', this.state.username, { path: '/' });
+                cookies.set('username', this.state.username.toLowerCase(), { path: '/' });
                 this.setState({goToLogin: true});
 
         }

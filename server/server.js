@@ -51,6 +51,7 @@ function mongoSetUpDone(){
         });
 
         app.post('/newUser', (req, res) => {
+                req.body.id = req.body.id.toLowerCase();
                 const salt = bcrypt.genSaltSync(saltRounds);
                 const hash = bcrypt.hashSync(req.body.password, salt);
                 usersCollection.findOne({_id: req.body.id}, (err, user) =>{
@@ -75,6 +76,7 @@ function mongoSetUpDone(){
 
         });
         app.post('/loginUser', (req, res) => {
+                req.body.id = req.body.id.toLowerCase();
                 res.setHeader('Content-Type', 'application/json');
                 usersCollection.findOne({_id: req.body.id}, (err, user) =>{
                         if(user != null){
@@ -87,6 +89,7 @@ function mongoSetUpDone(){
         });
 
         app.post('/setCurrentScore', (req, res) => {
+                req.body.id = req.body.id.toLowerCase();
                 usersCollection.findOne({_id: req.body.id}, (err, user) => {
                         if(user == null || user == undefined || err){
                                 res.send("not found");
@@ -119,6 +122,7 @@ function mongoSetUpDone(){
                 });
         });
         app.post('/userExists', (req, res) => {
+                req.body.id = req.body.id.toLowerCase();
                 res.setHeader('Content-Type', 'application/json');
                 usersCollection.findOne({_id: req.body.id}, (err, user) => {
                         if(user == null || user == undefined || err){
@@ -131,6 +135,7 @@ function mongoSetUpDone(){
 
         });
         app.post('/deleteUser', (req, res) => {
+                req.body.id = req.body.id.toLowerCase();
                 console.log("got remove reqest");
                 res.setHeader('Content-Type', 'application/json');
                 usersCollection.findOne({_id: req.body.id}, (err, user) => {
