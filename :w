@@ -12,11 +12,9 @@ class EditPoints extends Component {
                 super(props);
                 this.state ={
                         goToLogin: false,
-                        goToAdmin: false,
                         currentGameWonSelected: 0,
                         points: 0,
                         username:cookies.get("username"),
-                        isAdmin: false,
                 };
         }
 
@@ -27,10 +25,7 @@ class EditPoints extends Component {
                 };
                 fetch(this.props.url + "/getUsers", requestOptions).then(response => response.json()).then(response => {
                         console.log(response);
-                        this.setState({
-                                points: response[this.state.username].currentPoints,
-                                isAdmin: response[this.state.username].admin,
-                        });
+                        this.setState({points: response[this.state.username].currentPoints});
                 });
         }
 
@@ -49,23 +44,12 @@ class EditPoints extends Component {
                 if(cookies.get("loggedIn") != "true" || this.state.goToLogin){
                         return(<Redirect to="/login" />);
                 }
-                if(this.state.goToAdmin){
-                        return(<Redirect to="/admin" />);
-                }
 
                 return (<div>
 
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
                                 <Card className="w-75">
                                         <Card.Header> 
-                                                {
-                                                        this.state.isAdmin ? 
-                                                                <Button className=" mr-2" onClick={ () =>{
-                                                                        this.setState({ goToAdmin: true}) ;
-
-                                                                }} >   Go To Admin </Button> : ""
-                                                }
-
                                                 Logged in as <span className="text-primary mr-2">{this.state.username}</span>
                                                 <Button varient="danger" onClick={ () =>{
                                                         this.setState({ goToLogin: true}) ;
