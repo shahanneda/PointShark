@@ -58,20 +58,20 @@ class EditPoints extends Component {
                         <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
                                 <Card className="w-75">
                                         <Card.Header> 
-                                                {
-                                                        this.state.isAdmin ? 
-                                                                <Button className=" mr-2" onClick={ () =>{
-                                                                        this.setState({ goToAdmin: true}) ;
 
-                                                                }} >   Go To Admin </Button> : ""
-                                                }
 
                                                 Logged in as <span className="text-primary mr-2">{this.state.username}</span>
-                                                <Button varient="danger" onClick={ () =>{
-                                                        this.setState({ goToLogin: true}) ;
-                                                        cookies.set("loggedIn", "false",  { path: '/' });
+                                                <div className="float-right">
+                                                        <Button className=" mr-2" onClick={ () =>{
+                                                                this.setState({ goToAdmin: true}) ;
 
-                                                }} >   Logout </Button> 
+                                                        }} >   View Others</Button> 
+                                                        <Button varient="danger" onClick={ () =>{
+                                                                this.setState({ goToLogin: true}) ;
+                                                                cookies.set("loggedIn", "false",  { path: '/' });
+
+                                                        }} >   Logout </Button> 
+                                                </div>
                                         </Card.Header>
 
 
