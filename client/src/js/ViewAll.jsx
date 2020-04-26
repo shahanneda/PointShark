@@ -4,6 +4,10 @@ import {Redirect} from "react-router-dom";
 import Cookies from 'universal-cookie';
 import {Card, Button, Row, Col, ListGroup, Table, Modal} from "react-bootstrap";
 import Repeatable  from "react-repeatable"
+import BootstrapTable from 'react-bootstrap-table-next';
+
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css"
+
 
 const cookies = new Cookies();
 
@@ -87,6 +91,129 @@ class ViewAll extends Component {
     }
 
     let users = this.state.users;
+    const columns = [{ dataField: 'id', text: 'Name',
+      sort: false
+    }, {
+      dataField: 'currentPoints',
+      text: 'Current Points',
+      sort: true
+    }, {
+      dataField: 'lastPoints',
+      text: 'Last Points',
+      sort: true
+    },{
+      dataField: 'time',
+      text: 'Time Updated',
+      sort: true
+    },{
+      dataField: 'message',
+      text: 'Message ',
+      sort: false
+    },
+
+
+
+    ];
+    const defaultSorted = [{
+      dataField: 'currentPoints',
+      order: 'desc'
+    }];
+
+    let tableData = []
+
+    let rankFormatter = (cell, row, rowIndex, formatExtraData) => { 
+      return ( 
+        < div 
+          style={{ textAlign: "center",
+            cursor: "pointer",
+            lineHeight: "normal" }}>
+
+          {this.state.isAdmin ?
+            <div>
+              <Repeatable
+                tag="button"
+                type="button"
+                onHold={() => this.handleChangeScoreButton(row.id, "+", users)}
+                onRelease={() => this.handleChangeScoreButton(row.id, "+", users)}
+                className="mr-2 ml-2 btn btn-primary "
+              >
+                +
+              </Repeatable>
+
+              <Repeatable
+                tag="button"
+                type="button"
+                onHold={() => this.handleChangeScoreButton(row.id, "-", users)}
+                onRelease={() => this.handleChangeScoreButton(row.id, "-", users)}
+                className="mr-2 ml-2 btn btn-danger"
+              >
+                -
+              </Repeatable>
+
+              {row.id != this.state.username  ? 
+                  (<Button variant="danger" onClick={ ()=> this.setState({showModal: true, currentRemoveUserId: row.id}) }> Remove </Button>)  :
+                  (<Button variant="danger" className="disabled" onClick={ e => e.preventDefault() }> Remove </Button>)}
+            </div>  
+            : ""}
+        </div>
+
+
+      ) 
+    }
+
+    if(this.state.isAdmin){
+
+      columns.push({
+        dataField: "edit",
+        text:"Edit",
+        sort:false ,
+        formatter:rankFormatter,
+      });
+    }
+    Object.keys(users).map( id => {
+
+      let date = new Date(users[id].lastUpdatedTime);
+      tableData.push({
+        id: id,
+        currentPoints: users[id].currentPoints,
+        lastPoints:users[id].lastPoints,
+        time:(date.getHours() > 12 ? date.getHours() % 12 : date.getHours()) + ":" + (date.getMinutes() < 10? date.getMinutes() + "0" : date.getMinutes()) ,
+        message:users[id].updateMessage,
+        edit:"",
+
+      });
+
+    });/*                            {users[id].currentPoints}
+
+                            {this.state.isAdmin ?
+                              <div>
+                                <Repeatable
+                                  tag="button"
+                                  type="button"
+                                  onHold={() => this.handleChangeScoreButton(id, "+", users)}
+                                  onRelease={() => this.handleChangeScoreButton(id, "+", users)}
+                                  className="mr-2 ml-2 btn btn-primary "
+                                >
+                                  +
+                                </Repeatable>
+                                <Repeatable
+                                  tag="button"
+                                  type="button"
+                                  onHold={() => this.handleChangeScoreButton(id, "-", users)}
+                                  onRelease={() => this.handleChangeScoreButton(id, "-", users)}
+                                  className="mr-2 ml-2 btn btn-danger"
+                                >
+                                  -
+                                </Repeatable>
+                              </div> : "" }
+
+
+                          </th>
+
+                          <th>{users[id].lastPoints}</th>
+                          <th>{(date.getHours() > 12 ? date.getHours() % 12 : date.getHours()) + ":" + (date.getMinutes() < 10? date.getMinutes() + "0" : date.getMinutes()) }</th>
+                          <th> {users[id].updateMessage}</th>
+                          {this.state.isAdmin && id != this.state.username  ? <th> <Button variant="danger" onClick={ ()=> this.setState({showModal: true, currentRemoveUserId: id}) }> Remove </Button> </th> : ""}*/
     return (<div>
 
       <div className="d-flex align-items-center justify-content-center align-items-center account-wrapper ">
@@ -109,7 +236,34 @@ class ViewAll extends Component {
 
 
           <Card.Body>
-            <Row> 
+            <Row className="w-100">
+
+
+              <BootstrapTable
+                bootstrap4
+                keyField="id"
+                data={ tableData }
+                columns={ columns }
+                defaultSorted={ defaultSorted }
+                className="w-100"
+                style={{width:"100%"}}
+              />
+              <Modal show={this.state.showModal} onHide={() => this.setState({showModal: false})}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Are you sure?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>User will be deleted forever!</Modal.Body>
+                <Modal.Footer>
+                  <Button variant="primary" onClick={() => this.setState({showModal: false})}>
+                    Cancel
+                  </Button>
+                  <Button variant="danger" onClick={this.deleteUserClicked}>
+                    Confirm
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              {/*
+
               <Table  bordered hover>
                 <thead>
                   <tr>
@@ -123,20 +277,7 @@ class ViewAll extends Component {
                 </thead>
                 <tbody>
 
-                  <Modal show={this.state.showModal} onHide={() => this.setState({showModal: false})}>
-                    <Modal.Header closeButton>
-                      <Modal.Title>Are you sure?</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>User will be deleted forever!</Modal.Body>
-                    <Modal.Footer>
-                      <Button variant="primary" onClick={() => this.setState({showModal: false})}>
-                        Cancel
-                      </Button>
-                      <Button variant="danger" onClick={this.deleteUserClicked}>
-                        Confirm
-                      </Button>
-                    </Modal.Footer>
-                  </Modal>
+
                   {
                     Object.keys(users).map( id => {
                       let date = new Date(users[id].lastUpdatedTime);
@@ -184,6 +325,7 @@ class ViewAll extends Component {
                   }
                 </tbody>
               </Table>
+              */}
             </Row>
           </Card.Body>
         </Card>
